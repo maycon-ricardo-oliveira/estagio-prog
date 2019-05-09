@@ -1,0 +1,26 @@
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+<h4>{{category.name}}</h4>
+{{#each post}}
+    <div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <h5>{{title}}</h5>
+            <p>{{description}}</p>
+            <a href="/post/{{slug}}"><button class="btn btn-outline-info" type="submit">Leia mais...</button></a>
+            <hr>
+            <small><b>{{category.name}} </b></small>
+            <small>Data de publicaçao: {{creationDate}}</small>
+        </div>
+    </div>
+
+    {{else}}
+
+    <h6  style="color: rgba(0,0,0,.65)" class="mt-4" >Nenhuma postagem registrada</h6>
+
+{{/each}}
+<br>

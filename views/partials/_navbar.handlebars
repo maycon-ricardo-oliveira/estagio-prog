@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">DBPB</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      </li>
+      
+      {{#if user}}
+              <li class="nav-item active">
+                <a class="nav-link" href="/admin">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="/admin/post">Postagens <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/admin/category">Categorias</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/user/listuser">Usuários</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/user/logout">Sair</a>
+              </li>
+        {{else}}
+              <li class="nav-item active">
+                  <a class="nav-link" href="/">Início <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/category">Categorias</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/user/login">Login</a>
+              </li>
+      {{/if}}
+    </ul>
+  </div>
+</nav>

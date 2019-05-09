@@ -1,0 +1,21 @@
+{{#each errors}}
+    <div class="alert alert-danger">{{text}}</div>
+    {{else}}
+{{/each}}
+<h3>Novo tipo de usuário</h3>
+<div class="card bg-light border-dark mt-4">
+    <div class="card-body">
+        <form action="/user/addtypeuser/new" method="POST">
+            <label for="name">Nome: </label>
+                <input type="text" id="name" name="name" placeholder="Nome do tipo" class="form-control" required>
+            <label for="slug">Slug: </label>
+                <input type="text" id="slug" name="slug" placeholder="Slug do tipo" class="form-control" required>
+                 <div class="form-check">
+                    <input id="active" name="active" class="form-check-input" type="checkbox">
+                     <label class="form-check-label" for="gridCheck"> Ativo?</label>
+                 </div>
+                <br>
+            <button type="submit" class="btn btn-outline-success">Criar tipo</button>
+        </form>
+    </div>
+</div>

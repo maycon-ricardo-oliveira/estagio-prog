@@ -1,0 +1,30 @@
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+
+<h2> Lista de Usuários:</h2>
+<hr>
+
+{{#each user}}
+    <div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <h4>{{name}}</h4>
+            <h5>Email: {{email}}</h5>
+            <small>Tipo: {{eAdmin}}</small>
+            <br>
+            <a href=""><button class="btn btn-outline-warning" type="submit">Editar</button></a>    
+            <a href=""><button class="btn btn-outline-danger" type="submit">Excluir</button></a>
+        </div>
+    </div>
+
+    {{else}}
+
+    <h6  style="color: rgba(0,0,0,.65)" class="mt-4" >Nenhum usuário registrado</h6>
+
+{{/each}}
+
+<br>

@@ -1,0 +1,27 @@
+{{#each errors}}
+    <div class="alert alert-danger">{{text}}</div>
+    {{else}}
+{{/each}}
+
+<h2> Lista de Categorias:</h2>
+<hr>
+<a href="/admin/category/add"><button class="btn btn-outline-success">Nova categoria</button></a>
+
+
+{{#each category}}
+    <div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <h4>{{name}}</h4>
+            <small>Slug: {{slug}}</small><br>
+            <form action="/admin/category/delete" method="POST">
+                <input type="hidden" name="id" value="{{_id}}">
+                <a href="/admin/category/edit/{{_id}}"><button type="button" class="btn btn-outline-warning mt-4">Editar</button></a>
+                <button type="submit" class="btn btn-outline-danger mt-4">Excluir</button>
+            </form>
+        </div>
+    </div>
+    {{else}}
+
+    <h6  style="color: rgba(0,0,0,.65)" class="mt-4" >Nenhuma categoria registrada</h6>
+
+{{/each}}

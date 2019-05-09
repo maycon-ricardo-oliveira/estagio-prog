@@ -1,0 +1,40 @@
+{{#each errors}}
+    <div class="alert alert-danger">{{text}}</div>
+    {{else}}
+{{/each}}
+
+
+
+<h3>Nova Postagem</h3>
+<div class="card bg-light border-dark mt-4">
+    <div class="card-body">
+        <form action="/admin/post/new" method="POST">
+            <label for="name" class="mt-2">Título: </label>
+                <input type="text" id="title" name="title" placeholder="Título da postagem" class="form-control" required>
+
+            <label for="slug" class="mt-2">Slug: </label>
+                <input type="text" id="slug" name="slug" placeholder="Slug da postagem" class="form-control" required>
+
+            <label for="description" class="mt-2">Descrição: </label>
+                <input type="text" id="description" name="description" placeholder="Descrição da postagem" class="form-control" required>
+
+            <label for="content" class="mt-2">Conteúdo: </label>
+                <textarea id="content" style="height: 150px" name="content" placeholder="Conteudo da postagem" class="form-control" required></textarea>
+            
+            <label for="category mt-2" >Categoria:</label>
+                <select name="category" class="form-control">
+                    {{#each category}}
+                        <option value="{{_id}}">
+                            {{name}}
+                        </option>
+                        {{else}}
+                        <option value="0">Nenhuma categoria registrada</option>
+
+                    {{/each}}
+                </select>
+
+            <button type="submit" class="btn btn-outline-success mt-4">Criar Postagem</button>
+        </form>
+    </div>
+</div>
+ <br> 
