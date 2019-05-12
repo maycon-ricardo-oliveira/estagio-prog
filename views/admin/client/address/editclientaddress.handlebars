@@ -1,0 +1,41 @@
+{{#each errors}}
+    <div class="alert alert-danger">{{text}}</div>
+    {{else}}
+{{/each}}
+
+{{#each clientaddress}}
+<h2>Editar Endereço de {{client.name}}:</h2>
+<hr>
+<form action="/admin/client/edit" method="POST">
+<div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+        <input type="hidden" name="id" value="{{client._id}}">
+            <label for="cep" class="mt-2">Cep: </label>
+                <input type="text" id="cep" name="cep" placeholder="CEP" class="form-control" value="{{cep}}" required>
+
+            <label for="street" class="mt-2">Rua: </label>
+                <input type="text" id="street" name="street" placeholder="Rua" class="form-control"  value="{{street}}"required>
+            
+            <label for="district" class="mt-2">Bairro: </label>
+                <input type="text" id="district" name="district" placeholder="Bairro" class="form-control"  value="{{district}}"required>
+
+            <label for="number" class="mt-2">Número: </label>
+                <input type="text" id="number" name="number" placeholder="Número" class="form-control"  value="{{number}}"required>
+            
+            <label for="complement" class="mt-2">Complemento: </label>
+                <input type="text" id="complement" name="complement" placeholder="Complemento" class="form-control"  value="{{complement}}"required>
+            
+            <label for="city" class="mt-2">Cidade: </label>
+                <input type="text" id="city" name="city" placeholder="Cidade" class="form-control"  value="{{city}}"required>
+            
+            <label for="state" class="mt-2">Estado: </label>
+                <input type="text" id="state" name="state" placeholder="Estado" class="form-control"  value="{{state}}"required>
+
+            <button type="submit" class="btn btn-outline-success mt-4">Editar Endereço</button>
+
+        </form>
+       </div>
+    </div> 
+    {{else}}
+
+{{/each}}

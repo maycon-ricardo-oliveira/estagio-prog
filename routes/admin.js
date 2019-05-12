@@ -1,420 +1,510 @@
-const express = require("express")
-const router = express.Router()
-const mongoose = require("mongoose")
-require("../models/Category")
-const Category = mongoose.model("category")
-require("../models/Post")
-const Post = mongoose.model("post")
-const {eAdmin}= require("../helpers/eAdmin")
-const {eBlogger}= require("../helpers/eBlogger")
-const format = require('date-format');
+require("../models/TypeUser")
+require("../models/Client")
+require("../models/User") 
+require("../models/ClientAddress")
 
-router.get('/', eAdmin, (req, res) => {
+const express       = require('express')
+const mongoose      = require('mongoose')
+const format        = require('date-format')
+const {eAdmin}      = require("../helpers/eAdmin")
+const axios         = require('axios')
+
+const router        = express.Router()
+const TypeUser      = mongoose.model('typeuser')
+const Client        = mongoose.model('client')
+const ClientAddress = mongoose.model('clientaddress')
+const User          = mongoose.model('user')
+
+
+router.get('/', (req, res) => {
 
     res.render("admin/index")
 
 })
 
-router.get('/category', eAdmin, (req, res) => {
+router.get('/client', (req, res) => {
 
-    Category.find().sort( {
+    Client.find().then((client) => {
 
-        date:'desc'
+        res.render("admin/client/index", {client:client} )
 
-    }).then((category) => {
+    }).catch((error) => {
 
-        res.render("admin/category", {category: category})
+        req.flash("error_msg", "Houve um erro ao listar clientes")
+        res.redirect("/admin")
+
+    })
+})
+
+router.get("/client/add", (req, res) => {
+
+    TypeUser.find().then((typeuser) => {
+
+        res.render("admin/client/addclient", {typeuser: typeuser})
 
     }).catch((error) => {
 
         req.flash("error_msg", "Houve um erro ao listar as categorias")
-        res.redirect("/admin")
+        res.redirect("/admin/client")
 
     })
-})
-
-router.get('/category/add', eAdmin, (req, res) => {
-
-    res.render("admin/addcategory")
 
 })
 
-router.post('/category/new', eAdmin, (req, res) => {
-
-    var errors = []
-
-    if (!req.body.name || typeof req.body.name  == undefined || req.body.name == null) {
-
-        errors.push({text: "Nome inválido"})
-
-    }
-
-    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-
-        errors.push({ text: "Slug inválido" })
-
-    }
-
-    if (req.body.name.length < 2) {
-
-        errors.push({ text: "Nome da categoria é muito pequeno" })
-
-    }
-
-    if (errors.length > 0) {
-
-        res.render("admin/addcategory", { errors: errors })
-
-    } else {
-
-        const newCategory = {
-
-            name: req.body.name,
-            slug: req.body.slug
-
-        }
-
-        new Category(newCategory).save().then(() => {
-
-            req.flash("success_msg", "Categoria criada com sucesso!")
-            res.redirect("/admin/category")
-
-        }).catch((error) => {
-
-            req.flash("error_msg", "Houve um erro ao salvar categoria, tente novamente!")
-            res.redirect("/admin")
-
-        })
-    }
-})
-
-router.get("/category/edit/:id", eAdmin, (req, res) => {
-
-    Category.findOne({_id:req.params.id}).then((category) => {
-
-        res.render("admin/editcategory", {category: category})
-
-    }).catch((error) => {
-
-        req.flash("error_msg", "Esta categoria não existe!")
-        res.redirect("/admin/category")
-
-    })
-})
-
-router.post("/category/edit", eAdmin, (req, res) => {
-
-    var errors = []
-
-    if (!req.body.name || typeof req.body.name  == undefined || req.body.name == null) {
-
-        errors.push({text: "Nome inválido"})
-
-    }
-
-    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-
-        errors.push({ text: "Slug inválido" })
-
-    }
-
-    if (req.body.name.length < 2) {
-
-        errors.push({ text: "Nome da categoria é muito pequeno" })
-
-    }
-
-    if (errors.length > 0) {
-
-        res.render("admin/addcategory", {
-
-            errors: errors
-
-        })
-
-    } else {
-
-            Category.findOne({_id: req.body.id}).then((category) => {
-            category.name = req.body.name
-            category.slug = req.body.slug
-
-            category.save().then(() => {
-
-                req.flash("success_msg", "Categoria editada com sucesso!")
-                res.redirect("/admin/category")
-
-            }).catch((error) => {
-
-                req.flash("error_msg", "Houve um erro interno ao salvar a edição da categoria!")
-                res.redirect("/admin/category")
-
-            })
-
-        }).catch((error) => {
-
-            req.flash("error_msg", "Houve um erro ao editar a categoria!")
-            res.redirect("/admin/category")
-
-        })
-    }
-})
-
-router.post("/category/delete", eAdmin, (req, res) => {
-
-    Category.remove( {_id: req.body.id}).then(() => {
-
-        req.flash("success_msg", "Categoria deletada com sucesso!")
-        res.redirect("/admin/category")
-
-    }).catch((error) => {
-
-        req.flash("error_msg", "Houve um erro ao deletar categoria")
-        res.redirect("/admin/category")
-
-    })
-})
-
-router.get("/post", eAdmin, (req, res) => {
-
-    Post.find().populate("category").sort( {date: "desc"} ).then((post) => {
-
-        res.render("admin/post", {post: post} )
-
-    }).catch((error) => {
-
-        req.flash("error_msg", "Houve um erro ao listar as postagens")
-        res.redirect("/admin")
-
-    })
-})
-
-router.get("/post/add", eAdmin, (req, res) => {
-
-    Category.find().then((category) => {
-
-        res.render("admin/addpost", {category: category})
-
-    }).catch((error) => {
-
-        req.flash("error_msg", "Houve um erro ao carregar formulário!")
-        res.redirect("/admin")
-
-    })
-})
-
-router.post("/post/new", eAdmin, (req,  res) => {
+router.post("/client/new", (req,  res) => {
 
     var errors =[]
-    //Título
-    if (!req.body.title || typeof req.body.title  == undefined || req.body.title == null) {
+ 
+    if (!req.body.name || typeof req.body.name  == undefined || req.body.name == null) {
        
-        errors.push({text: "Título inválido"})
+        errors.push({text: "Nome inválido"})
 
     }
 
-    if (req.body.title.length < 2) {
+    if (req.body.name.length < 2) {
 
-        errors.push({ text: "O título é muito pequeno" })
+        errors.push({ text: "O nome é muito pequeno" })
     }
 
-    //Slug
-    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
+    if (!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
 
-        errors.push({ text: "Slug inválido" })
-
-    }
-
-    //Descrição
-    if (!req.body.description || typeof req.body.description  == undefined || req.body.description == null) {
-
-        errors.push({text: "Descrição inválida"})
+        errors.push({ text: "Email inválido" })
 
     }
 
-    if (req.body.description.length < 2) {
+    if (!req.body.telephone || typeof req.body.telephone  == undefined || req.body.telephone == null) {
 
-        errors.push({ text: "A descrição é muito pequena" })
-    }
-
-    //Conteúdo
-    if (!req.body.content || typeof req.body.content  == undefined || req.body.content == null) {
-
-        errors.push({text: "Conteúdo inválido"})
+        errors.push({text: "Telefone inválida"})
 
     }
 
-    if (req.body.description.length < 2) {
+    if (req.body.telephone.length < 2) {
 
-        errors.push({ text: "O conteúdoo é muito pequeno" })
+        errors.push({ text: "O telefone é muito pequeno" })
     }
 
-    //Categoria
-    if ( req.body.category == "0") {
+    if (!req.body.cpf || typeof req.body.cpf  == undefined || req.body.cpf == null) {
 
-        errors.push({text: "Categoria inválida!"})
+        errors.push({text: "Cpf inválido"})
+
+    }
+
+    if (req.body.cpf.length < 2) {
+
+        errors.push({ text: "O cpf é muito pequeno" })
+    }
+
+    if ( req.body.typeuser == "0") {
+
+        errors.push({text: "Tipo de pessoa inválido!"})
 
     }
 
     if (errors.length > 0) {
 
-        res.render("admin/addpost", { errors: errors })
+        res.render("admin/client/addclient", { errors: errors })
 
     } else {
 
-        const newPost = {
+        const newClient = {
 
-            title: req.body.title,
-            description: req.body.description,
-            content: req.body.content,
-            category: req.body.category,
-            slug: req.body.slug
+            name:       req.body.name,
+            email:      req.body.email,
+            telephone:  req.body.telephone,
+            cpf:        req.body.cpf,
+            typeUser:   req.body.typeuser,
+            address:    req.body.id 
 
         }
+        new Client(newClient).save().then(() => {
 
-        new Post(newPost).save().then(() => {
-
-            req.flash("success_msg", "Postagem criada com sucesso!")
-            res.redirect("/admin/post")
+            req.flash("success_msg", "Cliente criado com sucesso!")
+            res.redirect("/admin/client")
 
         }).catch((error) => {
+            console.log(error)
 
-            req.flash("error_msg", "houve um erro ao salvar postagem")
-            res.redirect("/admin/post")
+            req.flash("error_msg", "Houve um erro ao salvar cliente")
+            res.redirect("/admin/client")
 
         })
     }
 })
 
+router.get("/client/edit/:id", (req,res) => {
 
-router.get("/post/edit/:id", eAdmin, (req,res) => {
+    Client.findOne( {_id: req.params.id} ).then((client) => {
 
-    Post.findOne({_id: req.params.id}).then((post) => {
+        TypeUser.find().then((typeuser) => {
 
-        Category.find().then((category) => {
-
-            res.render("admin/editpost", {category: category, post: post})
+            res.render("admin/client/editclient", {typeuser: typeuser, client: client})
 
         }).catch((error) => {
 
-            req.flash("error_msg", "Houve um erro ao listar as categorias")
-            res.redirect("/admin/post")
+            req.flash("error_msg", "Houve um erro ao listar os tipos de pessoas")
+            res.redirect("/admin/client")
 
         })
 
     }).catch((error) => {
 
         req.flash("error_msg", "Houve um erro ao caarregar o formulário de edição")
-        res.redirect("/admin/post")
+        res.redirect("/admin/client")
 
     })
 
 })
 
-
-router.post("/post/edit", eAdmin, (req, res) => {
+router.post("/client/edit", (req, res) => {
 
     var errors =[]
-    //Título
-    if (!req.body.title || typeof req.body.title  == undefined || req.body.title == null) {
-
-        errors.push({text: "Título inválido"})
-
-    }
-
-    if (req.body.title.length < 2) {
-
-        errors.push({ text: "O título é muito pequeno" })
-    }
-
-    //Slug
-    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-
-        errors.push({ text: "Slug inválido" })
+ 
+    if (!req.body.name || typeof req.body.name  == undefined || req.body.name == null) {
+       
+        errors.push({text: "Nome inválido"})
 
     }
 
-    //Descrição
-    if (!req.body.description || typeof req.body.description  == undefined || req.body.description == null) {
+    if (req.body.name.length < 2) {
 
-        errors.push({text: "Descrição inválida"})
+        errors.push({ text: "O nome é muito pequeno" })
+    }
+
+    if (!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
+
+        errors.push({ text: "Email inválido" })
 
     }
 
-    if (req.body.description.length < 2) {
+    if (!req.body.telephone || typeof req.body.telephone  == undefined || req.body.telephone == null) {
 
-        errors.push({ text: "A descrição é muito pequena" })
-    }
-
-    //Conteúdo
-    if (!req.body.content || typeof req.body.content  == undefined || req.body.content == null) {
-
-        errors.push({text: "Conteúdo inválido"})
+        errors.push({text: "Telefone inválida"})
 
     }
 
-    if (req.body.description.length < 2) {
+    if (req.body.telephone.length < 2) {
 
-        errors.push({ text: "O conteúdoo é muito pequeno" })
+        errors.push({ text: "O telefone é muito pequeno" })
+    }
+
+    if (!req.body.cpf || typeof req.body.cpf  == undefined || req.body.cpf == null) {
+
+        errors.push({text: "Cpf inválido"})
 
     }
 
-    //Categoria
-    if ( req.body.category == "0") {
+    if (req.body.cpf.length < 2) {
 
-        errors.push({text: "Categoria inválida!"})
+        errors.push({ text: "O cpf é muito pequeno" })
+    }
+
+    if ( req.body.typeuser == "0") {
+
+        errors.push({text: "Tipo de pessoa inválido!"})
 
     }
 
     if (errors.length > 0) {
 
-        res.render("admin/addpost", { errors: errors })
+        res.render("admin/client/index", { errors: errors })
 
     } else {
 
-        Post.findOne({_id: req.body.id}).then((post) => {
+        Client.findOne( {_id: req.body.id} ).then((client) => {
 
-            post.title = req.body.title
-            post.description = req.body.description
-            post.slug = req.body.slug
-            post.content = req.body.content
-            post.category = req.body.category
+            client.name         = req.body.name,
+            client.email        = req.body.email,
+            client.telephone    = req.body.telephone,
+            client.cpf          = req.body.cpf,
+            client.typeUser     = req.body.typeuser
 
-            post.save().then(() => {
+            client.save().then(() => {
 
-                req.flash("success_msg", "Postagem editada com sucesso!")
-                res.redirect("/admin/post")
+                req.flash("success_msg", "Cliente editado com sucesso!")
+                res.redirect("/admin/client")
 
-            }).catch((error) =>{
+            }).catch((error) => {
 
                 req.flash("error_msg", "Erro interno")
-                res.redirect("/admin/post")
+                res.redirect("/admin/client")
 
             })
 
         }).catch((error) =>{
 
                 req.flash("error_msg", "Houve um erro ao salvar edição")
-                res.redirect("/admin/post")
+                res.redirect("/admin/client")
 
             })
         }
     })
 
+router.get("/client/delete/:id", (req,res) => {
 
-router.get("/post/delete/:id", eAdmin, (req,res) => {
+    Client.remove({_id: req.params.id}).then(() => {
 
-    Post.remove({_id: req.params.id}).then(() => {
-
-        req.flash("success_msg", "Postagem deletada!")
-        res.redirect("/admin/post")
-
+        req.flash("success_msg", "Cliente deletado!")
+        res.redirect("/admin/client")
+ 
     }).catch((error) =>{
 
-        console.log(error)
-        req.flash("error_msg", "Houve um erro ao deletar postagem")
-        res.redirect("/admin/post")
+        req.flash("error_msg", "Houve um erro ao deletar cliente")
+        res.redirect("/admin/client")
 
     })
 })
 
+router.get("/client/address/add/:id", (req, res) => {
+
+    Client.findOne( {_id: req.params.id} ).then((client) => {
+
+        res.render("admin/client/address/addclientaddress",  {client: client} )
+
+     }).catch((error) => {
+
+        req.flash("error_msg", "Houve um erro ao carregar o formulário de edição")
+        res.redirect("/admin/client")
+
+    })
+
+})
+
+router.post("/client/address/add", (req, res) => {
+
+    var errors =[]
+ 
+    if (!req.body.cep || typeof req.body.cep  == undefined || req.body.cep == null) {
+       
+        errors.push({text: "CEP inválido"})
+
+    }
+
+    if (req.body.cep.length < 8) {
+
+        errors.push( { text: "O CEP é muito pequeno" } )
+
+    }
+
+    if (!req.body.street || typeof req.body.street == undefined || req.body.street == null) {
+
+        errors.push( { text: "Rua inválida" } )
+
+    }
+
+    if (!req.body.district || typeof req.body.district  == undefined || req.body.district == null) {
+
+        errors.push( {text: "Bairro inválida"} )
+
+    }
+
+    if (!req.body.number || typeof req.body.number  == undefined || req.body.number == null) {
+
+        errors.push( {text: "Número inválido"} )
+
+    }
+
+    if (!req.body.city || typeof req.body.city  == undefined || req.body.city == null) {
+
+        errors.push( {text: "Cidade inválida"} )
+
+    }
+
+    if (!req.body.state || typeof req.body.state  == undefined || req.body.state == null) {
+
+        errors.push( {text: "Estado inválido"} )
+
+    }
+
+    if (errors.length > 0) {
+
+        res.render("admin/client/index", { errors: errors } )
+
+    } else {
+
+        const newClientAddress = {
+
+            cep:           req.body.cep,
+            street:        req.body.street,
+            district:      req.body.district,
+            number:        req.body.number,
+            complement:    req.body.complement,
+            city:          req.body.city,
+            state:         req.body.state,
+            sourceClient:  req.body.id
+        }
+        // concate address and search on api google
+        var location = 
+        req.body.street + ' ' +
+        req.body.district + ' ' +
+        req.body.number + ' ' +
+        req.body.complement + ' ' +
+        req.body.city + ' ' +
+        req.body.state + ' ' +
+        req.body.cep 
+    
+        axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
+        params:{
+            address:location,
+            key:'AIzaSyBdta5MVGzl9iMQFvelogCTiONPGTwt5Nk'
+        }
+        })
+        .then(function(response) {
+        // Log full response
+            const lat = response.data.results[0].geometry.location.lat;
+            const lng = response.data.results[0].geometry.location.lng;
+            newClientAddress.latitude = lat
+            newClientAddress.longitude = lng
+
+            new ClientAddress(newClientAddress).save().then(() => {
+
+                console.log(newClientAddress)
+                
+                req.flash("success_msg", "Endereço do cliente criado com sucesso!")
+                res.redirect("/admin/client")
+    
+            }).catch((error) => {
+    
+                req.flash("error_msg", "Houve um erro ao salvar endereço do cliente!")
+                res.redirect("/admin/client")
+    
+            })
+
+        }).catch((error) => {
+
+            console.log(error);
+
+        })
+        
+    }
+
+})
+
+// router.get("/client/address/edit/:id", (req, res) => {
+
+//     ClientAddress.findOne( {_idAddress: req.params.id} ).then((client) => {
+
+//             res.render("admin/editclientaddress", {client: client} )
+
+//     }).catch((error) => {
+
+//         req.flash("error_msg", "Houve um erro ao carregar o formulário de edição")
+//         res.redirect("/admin/client")
+
+//     })
+
+// })
+
+router.get("/client/data/:id", (req, res) => {
+
+    Client.findOne().then((client) => {
+
+        ClientAddress.findOne().then((address) => {
+
+            if (client) {
+
+                if (address) {
+
+                    res.render("admin/client/dataclient", {client: client, address: address} )
+                }
+            
+            } else {
+    
+                req.flash("error_msg", "Houve um erro ao listar dados do cliente")
+                res.redirect("/admin/client")
+    
+            }
+
+        }).catch((error) => {
+
+            req.flash("error_msg", "Houve um erro ao encontrar endereço do cliente")
+            res.redirect("/")
+
+        })
+        
+    }).catch((error) => {
+
+        req.flash("error_msg", "Houve um erro interno")
+        res.redirect("/")
+
+    })
+})
+router.get('/geocode', (req, res) => {
+
+    var errors =[]
+ 
+    if (!req.body.cep || typeof req.body.cep  == undefined || req.body.cep == null) {
+       
+        errors.push({text: "CEP inválido"})
+
+    }
+
+    if (req.body.cep.length < 8) {
+
+        errors.push( { text: "O CEP é muito pequeno" } )
+
+    }
+
+    if (!req.body.street || typeof req.body.street == undefined || req.body.street == null) {
+
+        errors.push( { text: "Rua inválida" } )
+
+    }
+
+    if (!req.body.district || typeof req.body.district  == undefined || req.body.district == null) {
+
+        errors.push( {text: "Bairro inválida"} )
+
+    }
+
+    if (!req.body.number || typeof req.body.number  == undefined || req.body.number == null) {
+
+        errors.push( {text: "Número inválido"} )
+
+    }
+
+    if (!req.body.complement || typeof req.body.complement  == undefined || req.body.complement == null) {
+
+        errors.push( {text: "Complemento inválido"} )
+
+    }
+
+    if (!req.body.city || typeof req.body.city  == undefined || req.body.city == null) {
+
+        errors.push( {text: "Cidade inválida"} )
+
+    }
+
+    if (!req.body.state || typeof req.body.state  == undefined || req.body.state == null) {
+
+        errors.push( {text: "Estado inválido"} )
+
+    }
+
+    if (errors.length > 0) {
+
+        res.render("admin/client/index", { errors: errors } )
+
+    } else {
+
+        console.log(errors)
+
+    }
+
+})
+ 
+
 module.exports = router
+
+
+
+/* 
+clientAddress.cep           = req.body.cep,
+clientAddress.street        = req.body.street,
+clientAddress.district      = req.body.district,
+clientAddress.number        = req.body.number,
+clientAddress.complement    = req.body.complement,
+clientAddress.city          = req.body.city,
+clientAddress.state         = req.body.state,
+clientAddress.clientSource  = req.body.clientSource 
+clientAddress.clientSource
+  */

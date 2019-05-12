@@ -1,13 +1,14 @@
-const express = require('express')
-const router = express.Router()
-const mongoose = require('mongoose')
 require("../models/User")
-const User = mongoose.model("user")
-const bcrypt = require('bcryptjs')
-const passport = require('passport')
 require("../models/TypeUser")
-const TypeUser = mongoose.model('typeuser')
 
+const express   = require('express')
+const mongoose  = require('mongoose')
+const bcrypt    = require('bcryptjs')
+const passport  = require('passport')
+
+const router    = express.Router()
+const User      = mongoose.model("user")
+const TypeUser  = mongoose.model('typeuser')
 
 router.get("/register", (req,res) => {
 
@@ -72,7 +73,7 @@ router.post("/register", (req,res) => {
                 res.redirect("/user/register")
 
             } else {
-                console.log(req.body.typeuser)
+                
                 const newUser = new User({
 
                     name: req.body.name,
@@ -249,8 +250,3 @@ router.post('/addtypeuser/new', (req, res) => {
 
 
 module.exports = router
-
-
-
-
-// editar tipo de usuário em listuser

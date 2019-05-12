@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="/css/admin/admin.css">
+
+
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+
+<h2> Lista de Clientes:</h2>
+<hr>
+<a href="/admin/client/add"><button class="btn btn-outline-success">Novo cliente</button></a>
+
+{{#each client}}
+    <div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <h4>{{name}}</h4>
+            <h5>Telefone: {{telephone}}</h5>
+            <small>Email: {{email}}</small>
+            <br>
+            <div class="group-right">
+                <a href="/admin/client/data/{{_id}}"><button class="btn btn-outline-info right" type="submit">Visualizar</button></a>
+                <a href="/admin/client/edit/{{_id}}"><button class="btn btn-outline-warning" type="submit">Editar</button></a>
+                <a href="/admin/client/delete/{{_id}}"><button class="btn btn-outline-danger" type="submit">Excluir</button></a>
+            </div>
+        </div>
+    </div>
+
+    {{else}}
+
+    <h6  style="color: rgba(0,0,0,.65)" class="mt-4" >Nenhum cliente registrado</h6>
+
+{{/each}}
+
+<br>

@@ -1,0 +1,10 @@
+.group-right {
+
+    float: right;
+
+}
+
+.card-size {
+    max-width: 18rem;
+    min-height: 256px;
+}

@@ -1,1 +1,37 @@
-<button class="btn btn-success">Teste</button>
+<link rel="stylesheet" href="/css/admin/admin.css">
+
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+<div class="card bg-light rounded p-5 border-dark mt-4">
+    <div class="row justify-content-center">
+        <div class="card bg-light card-size rounded mx-1 my-1">
+            <div class="card-header">Clientes</div>
+            <div class="card-body">
+                <h5 class="card-title">Gerenciar Clientes</h5>
+                <p class="card-text">Adicione, edite, exclua dados pessoais de seus clientes.</p>
+                <a href="/admin/client" role="button" class="btn btn-outline-info btn-lg btn-block">Entrar</a>
+            </div>
+        </div>
+        <div class="card bg-light rounded card-size mx-1 my-1">
+            <div class="card-header">Projetos</div>
+            <div class="card-body">
+                <h5 class="card-title">Gerenciar Projetos</h5>
+                <p class="card-text">Adicione,  edite,  exclua dados dos projetos para seus clientes.</p>
+                <a href="/admin/client" role="button" class="btn btn-outline-info btn-lg btn-block">Entrar</a>
+            </div>
+        </div>
+        <div class="card bg-light rounded card-size mx-1 my-1">
+            <div class="card-header">Equipamentos</div>
+            <div class="card-body">
+                <h5 class="card-title">Gerenciar Equipamentos</h5>
+                <p class="card-text">Adicione, edite, exclua dados dos equipamentos de seus projetos.</p>
+                <a href="/admin/client" role="button" class="btn btn-outline-info btn-lg btn-block">Entrar</a>
+            </div>
+        </div>
+    </div>
+</div>

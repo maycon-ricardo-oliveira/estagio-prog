@@ -1,12 +1,4 @@
-<style>
-
-.center {
-
-  width: 25%;
-  padding: 10px;
-}
-
-</style>
+<link rel="stylesheet" href="/css/index.css">
 
 {{#each errors}}
 
@@ -16,11 +8,11 @@
 
 {{/each}}
 <div class="jumbotron">
-  <h1 class="display-4">De Blogueiro para Blogueiro!</h1>
-  <p class="lead">Ei... Você mesmo leitor desesperado, que busca amplo conhecimento.
-                 Aqui você encontrará as mais diversas publicações, temos o conteúdo certo para você!</p>
+  <h1 class="display-4">Bem Vindo ao ESF System!</h1>
+  <p class="lead">ESF System é um software para auxilio no dimensionamento e projeto de sistemas fotovoltaicos
+                com recursos de simulação, cálculo, emissão de relatório e documentação técnica de sistemas fotovoltaicos de qualquer porte.</p>
   <hr class="my-4">
-  <p>É blogueiro também? Crie agora mesmo sua conta e entre agora mesmo para nossa comunidade.</p>
+  <p>Trabalha com Energia Solar Fotovoltaica? Crie agora mesmo sua conta e entre para nossa comunidade.</p>
     {{#if user}}
 
         {{else}}
@@ -31,24 +23,3 @@
 </div>
 
 <hr>
-<h2>Postagens Recentes</h2>
-
-
-{{#each post}}
-    <div class="card bg-light border-dark mt-4">
-        <div class="card-body">
-            <h5>{{title}}</h5>
-            <p>{{description}}</p>
-            <a href="/post/{{slug}}"><button class="btn btn-outline-info" type="submit">Leia mais...</button></a>
-            <hr>
-            <small><b>{{category.name}} </b></small>
-            <small>Data de publicaçao: {{creationDate}}</small>
-        </div>
-    </div>
-
-    {{else}}
-
-    <h6  style="color: rgba(0,0,0,.65)" class="mt-4" >Nenhuma postagem registrada</h6>
-
-{{/each}}
-<br>

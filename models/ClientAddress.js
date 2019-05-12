@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const Schema   = mongoose.Schema
 
-const ClientAddress = new Schema ({
-    clientSource: {
+const ClientAddress = new Schema ({ 
+    sourceClient: {
         type: Schema.Types.ObjectId,
-        ref: "client",
         required: true
     },
     street: {
@@ -36,13 +35,13 @@ const ClientAddress = new Schema ({
         required: false
     },
     latitude: {
-        type: String,
+        type: Number,
         required: false
     },
     longiture: {
-        type: String,
+        type: Number,
         required: false
     }
 })
 
-mongoose.model("clientaddress", ClientAddress) 
+mongoose.model("clientaddress", ClientAddress)

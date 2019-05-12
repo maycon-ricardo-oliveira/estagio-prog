@@ -1,0 +1,37 @@
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+
+
+<h3>Dados Cadastrais</h3>
+<div class="card bg-light border-dark mt-4">
+    <div class="card-body">
+        <form action="/admin/client/edit" method="GET">
+            <input type="hidden" value="{{id}}" name="id">
+                <h4><label  for="name" class="mt-2">Nome: {{client.name}}</label></h4>
+                <label>Email: {{client.email}}</label>
+            <br>    
+                <label>Telefone: {{client.telephone}}</label>
+            <br>
+                <label>CPF / CNPJ: {{client.cpf}}</label>
+            <br>
+                <label>Rua {{address.street}}</label>
+        </form>
+        <a href="/admin/client/edit/{{_id}}"><button class="btn btn-outline-warning" type="submit">Editar</button></a>
+        {{#if address}}
+
+            <a href="/admin/client/address/add/{{_id}}"><button class="btn btn-outline-warning right">Adicionar Endereço</button></a>
+        
+        {{else}}
+
+            <a href="/admin/client/address/edit/{{_idAddress}}"><button class="btn btn-outline-warning right" >Editar Endereço</button></a>
+        
+        {{/if}}
+    </div>
+</div>
+<br>
+<br> 

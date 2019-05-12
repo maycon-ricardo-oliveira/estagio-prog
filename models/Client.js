@@ -2,15 +2,15 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Client = new Schema ({
-    userSource: {
-        type: Schema.Types.ObjectId,
-        ref: "user",
-        required: true
-    },
-    typeUser: {
+    typeClient: {
         type: Schema.Types.ObjectId,
         ref: "typeuser",
-        required: true
+        required: false
+    },
+    address:{
+        type: Schema.Types.ObjectId,
+        ref: "clientaddress",
+        required: false
     },
     name: {
         type: String,
@@ -24,7 +24,7 @@ const Client = new Schema ({
         type: String,
         required: true
     },
-    password: {
+    telephone: {
         type: String,
         required: true
     }

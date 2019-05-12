@@ -1,0 +1,45 @@
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+
+<h3>Editar Cliente</h3>
+<div class="card bg-light border-dark mt-4">
+    <div class="card-body">
+        <form action="/admin/client/edit" method="POST">
+        <input type="hidden" value="{{client.id}}" name="id">
+            <label for="name" class="mt-2">Nome: </label>
+                <input type="text" id="name" name="name" placeholder="Nome do cliente" class="form-control" value="{{client.name}}" required>
+
+            <label for="email" class="mt-2">Email: </label>
+                <input type="text" id="email" name="email" placeholder="Email cliente" class="form-control" value="{{client.email}}" required>
+            
+            <label for="telephone" class="mt-2">Telefone: </label>
+                <input type="text" id="telephone" name="telephone" placeholder="Telefone do cliente" class="form-control" value="{{client.telephone}}" required>
+
+            <label for="cpf" class="mt-2">CPF / CNPJ: </label>
+                <input type="text" id="cpf" name="cpf" placeholder="Cpf ou Cnpj" class="form-control" value="{{client.cpf}}" required>
+
+            <label for="typeuser mt-2" >Tipo de Pessoa:</label>
+                <select name="typeuser" id="typeuser" class="form-control">
+                   {{#each typeuser}}
+                        {{#if active}}
+                            <option value="{{_id}}">
+                                {{name}}
+                            </option>
+                        {{/if}}
+                        {{else}}
+                            <option value="0">Nenhum tipo registrado</option>
+                    {{/each}}
+                </select>
+
+            <button type="submit" class="btn btn-outline-success mt-4">Editar Cliente</button>
+
+        </form>
+    </div>
+</div>
+<br>
+<br> 

@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "connect-flash": "^0.1.1",
@@ -11,6 +12,7 @@
     "express": "^4.16.4",
     "express-handlebars": "^3.0.2",
     "express-session": "^1.16.1",
+    "google-geolocation": "^1.0.2",
     "mongoose": "^5.5.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"

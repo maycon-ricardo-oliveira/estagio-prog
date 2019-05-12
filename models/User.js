@@ -11,11 +11,9 @@ const User = new Schema ({
         required: true
     },
     eAdmin: {
-     //   type: Schema.Types.ObjectId,
-     //   ref: "typeuser",
-     //   required: true
-        type: Number,
-        default: 0
+        type: Schema.Types.ObjectId,
+        ref: "typeuser",
+        required: true
     },
     password: {
         type: String,
