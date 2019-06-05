@@ -3,122 +3,120 @@
     {{else}}
 {{/each}}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<h2>Adicionar Endereço {{client.name}}:</h2>
 <script type="text/javascript">
-function limpa_formulário_cep() {
-    //Limpa valores do formulário de cep.
-    document.getElementById('street').value=("");
-    document.getElementById('district').value=("");
-    document.getElementById('city').value=("");
-    document.getElementById('state').value=("");
 
-}
+    function limpa_formulário_cep() {
 
-function meu_callback(conteudo) {
-if (!("erro" in conteudo)) {
-    //Atualiza os campos com os valores.
-    document.getElementById('street').value=(conteudo.logradouro);
-    document.getElementById('district').value=(conteudo.bairro);
-    document.getElementById('city').value=(conteudo.localidade);
-    document.getElementById('state').value=(conteudo.uf);
-    $("#number").focus();
-} //end if.
-else {
-    //CEP não Encontrado.
-    limpa_formulário_cep();
-    alert("CEP não encontrado.");
-}
-}
+        document.getElementById('street').value=("");
+        document.getElementById('district').value=("");
+        document.getElementById('city').value=("");
+        document.getElementById('state').value=("");
 
-function pesquisacep(valor) {
-
-//Nova variável "cep" somente com dígitos.
-var cep = valor.replace(/\D/g, '');
-
-//Verifica se campo cep possui valor informado.
-if (cep != "") {
-
-    //Expressão regular para validar o CEP.
-    var validacep = /^[0-9]{8}$/;
-
-    //Valida o formato do CEP.
-    if(validacep.test(cep)) {
-
-        //Preenche os campos com "..." enquanto consulta webservice.
-        document.getElementById('street').value="...";
-        document.getElementById('district').value="...";
-        document.getElementById('city').value="...";
-        document.getElementById('state').value="...";
-
-        //Cria um elemento javascript.
-        var script = document.createElement('script');
-
-        //Sincroniza com o callback.
-        script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
-
-        //Insere script no documento e carrega o conteúdo.
-        document.body.appendChild(script);
-
-    } //end if.
-    else {
-        //cep é inválido.
-        limpa_formulário_cep();
-        alert("Formato de CEP inválido.");
     }
-} //end if.
-else {
-    //cep sem valor, limpa formulário.
-    limpa_formulário_cep();
-}
-};
-</script>
-<hr>
-<form action="." method="POST">
-<div class="card bg-light border-dark mt-4">
-    <div class="card-body ">
-        <input type="hidden" name="id" value="{{client._id}}">
-        <div class="justify-content-center">
-            <div class="row justify-content-center">
-                <label for="cep" class="mt-4 col-md-6">Cep:  
-                    <input name="cep" class="form-control" type="text" id="cep" value="" size="10" maxlength="9" onblur="pesquisacep(this.value);">
-                </label>
-            </div>
-            <div class="row justify-content-center">
-            <label for="street" class="mt-2 col-md-6">Rua: 
-                <input type="text" id="street" name="street" placeholder="Rua" class="form-control" required>
-            </label>
 
-            <label for="district" class="mt-2 col-md-6">Bairro: 
-                <input type="text" id="district" name="district" placeholder="Bairro" class="form-control" required>
-            </label>
+    function meu_callback(conteudo) {
 
-            <label for="number" class="mt-2 col-md-6">Número: 
-                <input type="text" id="number" name="number" placeholder="Número" class="form-control" required>
-            </label>
+        if (!("erro" in conteudo) ) {
 
-            <label for="complement" class="mt-2 col-md-6">Complemento: 
-                <input type="text" id="complement" name="complement" placeholder="Complemento" class="form-control">
-            </label>
+            document.getElementById('street').value=(conteudo.logradouro);
+            document.getElementById('district').value=(conteudo.bairro);
+            document.getElementById('city').value=(conteudo.localidade);
+            document.getElementById('state').value=(conteudo.uf);
+            $("#number").focus();
 
-            <label for="city" class="mt-2 col-md-6">Cidade: 
-                <input type="text" id="city" name="city" placeholder="Cidade" class="form-control" required>
-            </label>
+        } else {
 
-            <label for="state" class="mt-2 col-md-6">Estado:
-                <input type="text" id="state" name="state" placeholder="Estado" class="form-control" required>
-            </label>
-            <br>
-            </div>
-            <a href="/admin/client/address"><button class="btn btn-outline-info mt-4">Verificar Localidade</button></a>
+            limpa_formulário_cep();
+            alert("CEP não encontrado.");
             
-            <div class=" mt-4 card-block d-flex justify-content-start " id="geometry">
-                <ul class="list-group justify-content-center col-md-4">
-                    <li class="list-group-item "><strong>Latitude</strong>: </li>
-                    <li class="list-group-item "><strong>Longitude</strong>: </li>
-                </ul>
+        }
+    }
+
+    function pesquisacep(valor) {
+
+        var cep = valor.replace(/\D/g, '');
+
+        if (cep != "") {
+
+            var validacep = /^[0-9]{8}$/;
+
+            if(validacep.test(cep)) {
+
+                document.getElementById('street').value="...";
+                document.getElementById('district').value="...";
+                document.getElementById('city').value="...";
+                document.getElementById('state').value="...";
+
+                var script = document.createElement('script');
+
+                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+                document.body.appendChild(script);
+
+            } else {
+       
+                limpa_formulário_cep();
+                alert("Formato de CEP inválido.");
+            }
+        } else {
+
+            limpa_formulário_cep();
+        
+        }
+
+    };
+
+</script>
+
+<h2>Adicionar Endereço {{client.name}}:</h2>
+<hr>
+<form action="/admin/client/address/add" method="POST">
+    <div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <input type="hidden" name="id" value="{{client._id}}">
+            <div class="justify-content-center">
+                <div class="row justify-content-center">
+                    <label for="cep" class="mt-4 col-md-6"><strong>Cep</strong>:  
+                        <input name="cep" class="form-control" type="text" id="cep" value="" size="10" maxlength="9" onblur="pesquisacep(this.value);">
+                    </label>
+                </div>
+                <div class="row justify-content-center">
+                <label for="street" class="mt-2 col-md-6"><strong>Rua</strong>: 
+                    <input type="text" id="street" name="street" value="" placeholder="Rua" class="form-control" required>
+                </label>
+
+                <label for="district" class="mt-2 col-md-6"<strong><strong>Bairro</strong>: 
+                    <input type="text" id="district" name="district" value="" placeholder="Bairro" class="form-control" required>
+                </label>
+
+                <label for="number" class="mt-2 col-md-6"><strong>Número</strong>: 
+                    <input type="text" id="number" name="number" value="" placeholder="Número" class="form-control" required>
+                </label>
+
+                <label for="complement" class="mt-2 col-md-6"><strong>Complemento</strong>: 
+                    <input type="text" id="complement" name="complement" value="" placeholder="Complemento" class="form-control">
+                </label>
+
+                <label for="city" class="mt-2 col-md-6"><strong>Cidade</strong>: 
+                    <input type="text" id="city" name="city" value="" placeholder="Cidade" class="form-control" required>
+                </label>
+
+                <label for="state" class="mt-2 col-md-6"><strong>Estado</strong>:
+                    <input type="text" id="state" name="state" value="" placeholder="Estado" class="form-control" required>
+                </label>
+                <br>
+                </div>
+                <a href="/admin/client/address"><button class="btn btn-outline-info mt-4">Verificar Localidade</button></a>
+                <div class=" mt-4 card-block " id="geometry">
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item mr-3 w-50"><strong>Latitude</strong>: {{clientaddress.latitude}}</li>
+                        <li class="list-group-item ml-3 w-50"><strong>Longitude</strong>: {{clientaddress.longidute}}</li>
+                    </ul>
+                </div>
+                <button type="submit" class="btn btn-outline-success mb-4 mt-4">Adicionar Endereço</button>
             </div>
-              
-            <button type="submit" class="btn btn-outline-success mb-4 mt-4">Adicionar Endereço</button>
-</div>
+        </div>
     </div>
-</form>     
+</form>
+<br>
+<br>

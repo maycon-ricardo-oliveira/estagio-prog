@@ -7,6 +7,7 @@
 {{/each}}
 
 <h3>Editar Cliente</h3>
+
 <div class="card bg-light border-dark mt-4">
     <div class="card-body">
         <form action="/admin/client/edit" method="POST">
@@ -25,15 +26,23 @@
 
             <label for="typeuser mt-2" >Tipo de Pessoa:</label>
                 <select name="typeuser" id="typeuser" class="form-control">
+
                    {{#each typeuser}}
+
                         {{#if active}}
+
                             <option value="{{_id}}">
                                 {{name}}
                             </option>
+
                         {{/if}}
+
                         {{else}}
+
                             <option value="0">Nenhum tipo registrado</option>
+
                     {{/each}}
+                    
                 </select>
 
             <button type="submit" class="btn btn-outline-success mt-4">Editar Cliente</button>

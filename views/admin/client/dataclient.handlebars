@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/css/admin/admin.css">
 {{#each errors}}
 
     <div class="alert alert-danger">{{text}}</div>
@@ -11,27 +12,110 @@
 <div class="card bg-light border-dark mt-4">
     <div class="card-body">
         <form action="/admin/client/edit" method="GET">
-            <input type="hidden" value="{{id}}" name="id">
-                <h4><label  for="name" class="mt-2">Nome: {{client.name}}</label></h4>
-                <label>Email: {{client.email}}</label>
-            <br>    
-                <label>Telefone: {{client.telephone}}</label>
-            <br>
-                <label>CPF / CNPJ: {{client.cpf}}</label>
-            <br>
-                <label>Rua {{address.street}}</label>
-        </form>
-        <a href="/admin/client/edit/{{_id}}"><button class="btn btn-outline-warning" type="submit">Editar</button></a>
-        {{#if address}}
+            <input type="hidden" value="{{client._id}}" name="id">
+            <input type="hidden" value="{{address._id}}" name="idAddres">
+            
+            <div class="row justify-content-center">
+                <div class="card bg-light card-size-client rounded mx-1 my-1">
+                    <div class="card-header">Cadastro</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{client.name}}</h5>
+                        <label class="card-text">Cpf / Cnpj: {{client.cpf}}</label>
+                            <br>
+                        <label class="card-text">Tipo: {{client.typeClient}}</label>
+                            <br>
+                        <label class="card-text">Telefone: {{client.telephone}}</label>
+                            <br>
+                        <label class="card-text mb-1">Email: {{client.email}}</label>
 
-            <a href="/admin/client/address/add/{{_id}}"><button class="btn btn-outline-warning right">Adicionar Endereço</button></a>
-        
-        {{else}}
+                            <a href="/admin/client/edit/{{client._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Editar</a>
 
-            <a href="/admin/client/address/edit/{{_idAddress}}"><button class="btn btn-outline-warning right" >Editar Endereço</button></a>
-        
-        {{/if}}
+                    </div>
+                </div>
+
+                {{#if address}}
+
+                    <div class="card bg-light card-size-client rounded mx-1 my-1">
+                        <div class="card-header">Localização</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{address.street}} {{address.number}}</h5>
+                            <label class="card-text ">Bairro: {{address.district}}</label>
+                                <br>
+                            <label class="card-text ">Cidade: {{address.city}}</label>
+                                <br>
+                            <label class="card-text ">Estado: {{address.state}}</label>
+                                <br>
+                                    <div>
+                                        <label class="card-text  mb-1 col-md-5">Latitude: {{address.latitude}}</label>
+                                        <label class="card-text  mb-1 col-md-6">Longitude: {{address.longitude}}</label>
+                                    </div>
+                            <a href="/admin/client/address/edit/{{address._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Editar</a>
+                        </div>
+                    </div>
+
+                {{else}}
+
+                    <div class="card bg-light card-size-client rounded mx-1 my-1">
+                        <div class="card-header">Localização</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{client.name}} Não tem entedeço cadastrado</h5>
+                            <label class="card-text ">Bairro: {{address.district}}</label>
+                                <br>
+                            <label class="card-text ">Cidade: {{address.city}}</label>
+                                <br>
+                            <label class="card-text ">Estado: {{address.state}}</label>
+                                <br>
+                                    <div>
+                                        <label class="card-text  mb-1 col-md-5">Latitude: {{address.latitude}}</label>
+                                        <label class="card-text  mb-1 col-md-6">Longitude: {{address.longitude}}</label>
+                                    </div>
+                            <a href="/admin/client/address/add/{{client._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Adicionar</a>
+                        </div>
+                    </div>
+
+                {{/if}}
+
+                {{!-- {{#if energybill}} --}}
+
+                    <div class="card bg-light card-size-client rounded mx-1 my-1">
+                        <div class="card-header">Energia</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Histórico de Consumo</h5>
+                            <label class="card-text ">Consumo Médio(kWh):  135.5</label>
+                                <br>
+                            <label class="card-text ">Tipo de Fornecimento: Monofásico</label>
+                                <br>
+                            <label class="card-text ">Limites Adequados(V):  116 a 33</label>
+                            <a href="/admin/client/address/edit/{{energybill._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Editar</a>
+                        </div>
+                    </div>
+
+                {{!-- {{else}}
+
+                    <div class="card bg-light card-size-client rounded mx-1 my-1">
+                        <div class="card-header">Localização</div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{client.name}} Não tem entedeço cadastrado</h5>
+                            <label class="card-text ">Bairro: {{address.district}}</label>
+                                <br>
+                            <label class="card-text ">Cidade: {{address.city}}</label>
+                                <br>
+                            <label class="card-text ">Estado: {{address.state}}</label>
+                                <br>
+                                    <div>
+                                        <label class="card-text  mb-1 col-md-5">Latitude: {{address.latitude}}</label>
+                                        <label class="card-text  mb-1 col-md-6">Longitude: {{address.longitude}}</label>
+                                    </div>
+                            <a href="/admin/client/address/add/{{client._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Adicionar</a>
+                        </div>
+                    </div>
+
+                {{/if}} --}}
+                
+            </div> 
+        </form>   
     </div>
 </div>
+
 <br>
 <br> 

@@ -1,0 +1,48 @@
+{{#each errors}}
+    <div class="alert alert-danger">{{text}}</div>
+    {{else}}
+{{/each}}
+
+<h2>Adicionar Histórico de Consumo {{client.name}}:</h2>
+<hr>
+<form action="/admin/client/address/add" method="POST">
+    <div class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <input type="hidden" name="id" value="{{client._id}}">
+            <div class="justify-content-center">
+                <div class="row justify-content-center">
+                    <label for="supply" class="mt-2 col-md-6"><strong>Tipo de fornecimento</strong>: 
+                        <input type="text" id="supply" name="supply" value="" placeholder="Fornecimento" class="form-control" required>
+                    </label>
+                    <label for="appropriatelimits" class="mt-2 col-md-6"<strong><strong>Limites Adequados</strong>: 
+                        <div  class="list-group list-group-horizontal">
+                            <input type="text" id="appropriatelimitsmin" name="appropriatelimitsmin" value="" placeholder="Limite mínimo" class="form-control" required>
+                            <input type="text" id="appropriatelimitsmax" name="appropriatelimitsmax" value="" placeholder="Limite máximo" class="form-control" required>
+                        </div>
+                    </label>
+
+                    <label for="number" class="mt-2 col-md-6"><strong>Número</strong>: 
+                        <input type="text" id="number" name="number" value="" placeholder="Número" class="form-control" required>
+                    </label>
+
+                    <label for="complement" class="mt-2 col-md-6"><strong>Complemento</strong>: 
+                        <input type="text" id="complement" name="complement" value="" placeholder="Complemento" class="form-control">
+                    </label>
+
+                    <label for="city" class="mt-2 col-md-6"><strong>Cidade</strong>: 
+                        <input type="text" id="city" name="city" value="" placeholder="Cidade" class="form-control" required>
+                    </label>
+
+                    <label for="state" class="mt-2 col-md-6"><strong>Estado</strong>:
+                        <input type="text" id="state" name="state" value="" placeholder="Estado" class="form-control" required>
+                    </label>
+                    <br>
+                </div>
+
+                <button type="submit" class="btn btn-outline-success mb-4 mt-4">Adicionar Consumo</button>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+<br>

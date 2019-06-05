@@ -26,7 +26,7 @@ const ClientAddress = new Schema ({
         type: String,
         required: false
     },
-    estate: {
+    state: {
         type: String,
         required: false
     },
@@ -38,7 +38,7 @@ const ClientAddress = new Schema ({
         type: Number,
         required: false
     },
-    longiture: {
+    longitude: {
         type: Number,
         required: false
     }

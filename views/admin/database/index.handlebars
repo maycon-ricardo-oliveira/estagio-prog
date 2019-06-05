@@ -1,0 +1,153 @@
+{{#each errors}}
+
+    <div class="alert alert-danger">{{text}}</div>
+
+    {{else}}
+
+{{/each}}
+<script>
+function FileFrame(fileArea, fileTitle) {
+  var self = this;
+
+  this.fileArea = fileArea;
+  this.fileTitle = fileTitle;
+
+  this.init = function() {
+    // Registrando eventos de drag and drop
+    self.fileArea.addEventListener("dragleave", self.dragHover, false);
+    self.fileArea.addEventListener("dragover", self.dragHover, false);
+    self.fileArea.addEventListener("drop", self.drop, false);
+ 
+  };
+
+  this.dragHover = function(e) {
+    // Impede possíveis tratamentos dos arquivos
+    // arrastados pelo navegador, por exemplo, exibir
+    // o conteudo do mesmo.
+    e.stopPropagation();  
+    e.preventDefault();  
+
+    // Quando o arquivo está sobre área alteramos o seu estilo
+    self.fileArea.className = (e.type == "dragover" ? "hover" : "");  
+  };
+
+  this.drop = function(e) {
+    self.dragHover(e);  
+
+    // Volta um array com os arquivos arratados,
+    // porém neste exemplo iremos tratar apenas
+    // o primeiro arquivo
+    self.file = e.dataTransfer.files[0];  
+   
+    // Recupera nome do arquivo
+    self.fileTitle.innerHTML = self.file.name;
+
+
+    self.read(self.file);
+    
+    // Neste ponto podemos implementar uma função para
+    // enviar os arquivos via ajax.
+    // Irei deixar um exemplo, qualquer dúvida eu peço
+    // que utilize o sistema de comentários do site.
+    /*
+    self.sendFile(self.file);
+    */
+  };
+
+  // Esse método irá ler o arquivo na memória,
+  // depois iremos mostrá-lo no nosso frame
+  this.read = function(file) {
+    // Iremos ler apenas imagens nesse exemplo
+    // e iremos exibi-lo no frame
+    if (file.type.match('image.*')) {
+      var reader = new FileReader();
+
+      // Callback que será executado após a leitura do arquivo
+      reader.onload = function(f) {
+        self.fileArea.innerHTML = "";
+        self.fileArea.setAttribute("style", "padding: 0px !important;");
+        
+        // Criação do elemento que será utilizado para exibir a imagem
+        var img = document.createElement("img");
+        img.setAttribute("src", f.target.result);
+        img.setAttribute("height", "350");
+
+        self.fileArea.appendChild(img);
+      }
+
+      // Irá ler o arquivo para ser acessado através de uma url
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Essa função pode ser utilizada como 
+  this.sendFile = function(file) {
+
+    // Criaremos um formulário
+    var f = new FormData();
+    // Passando o arquivo para o formulário
+    f.append("file", file);
+
+    // Chamada async para realizar o upload da imagem
+    var request = new XMLHttpRequest();
+    request.open("POST", "", true);
+    request.send(f);
+    request.onreadystatechange=function(){
+      // Término do envio do formulário
+      if(request.readyState==4) {
+      }
+    }
+  };
+
+}
+
+// Recupera a div que conterá a imagem
+// e o span com o título de nosso arquivo
+var area = document.getElementById("image-area");
+var title = document.getElementById("title");
+
+var fileFrameArea = new FileFrame(area, title);
+fileFrameArea.init();
+
+</script>
+<style>
+
+    #example-content 
+    { 
+        text-align: center; 
+    }
+    #frame { 
+        background-color: #000; 
+        color: #fff; 
+        margin: 50px; 
+        width: 400px; 
+        height: 450px; 
+        padding: 50px; 
+        }
+    #image-area { 
+        width: 100%; 
+        border: 1px dotted #fff; 
+        padding-top: 50%; 
+        padding-bottom: 50%; 
+        margin-bottom: 15px; 
+        overflow:hidden; 
+        }
+
+    .hover { 
+        border: 1px solid #fff !important; 
+        }
+
+</style>
+<div class="card bg-light rounded p-5 border-dark mt-4">
+    <div class="row justify-content-center">
+        <div id="example-content">
+            <div id="frame">
+                <div id="image-area">
+                    <span id="drop-message"> Arraste a imagem aqui </span>
+                </div>
+                <span id="title"> Digite um titulo </span>
+            </div>
+        </div>
+    </div>
+
+</div>

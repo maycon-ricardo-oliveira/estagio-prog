@@ -8,3 +8,8 @@
     max-width: 18rem;
     min-height: 256px;
 }
+.card-size-client {
+    max-width: 512px;
+    min-width: 512px;
+    min-height: 300px;
+}

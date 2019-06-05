@@ -7,11 +7,6 @@ const Client = new Schema ({
         ref: "typeuser",
         required: false
     },
-    address:{
-        type: Schema.Types.ObjectId,
-        ref: "clientaddress",
-        required: false
-    },
     name: {
         type: String,
         required: true

@@ -102,7 +102,7 @@ router.post("/client/new", (req,  res) => {
 
     if (errors.length > 0) {
 
-        res.render("admin/client/addclient", { errors: errors })
+        res.render("admin/client/addclient", {errors: errors} )
 
     } else {
 
@@ -137,7 +137,7 @@ router.get("/client/edit/:id", (req,res) => {
 
         TypeUser.find().then((typeuser) => {
 
-            res.render("admin/client/editclient", {typeuser: typeuser, client: client})
+            res.render("admin/client/editclient", {typeuser: typeuser, client: client} )
 
         }).catch((error) => {
 
@@ -195,18 +195,18 @@ router.post("/client/edit", (req, res) => {
 
     if (req.body.cpf.length < 2) {
 
-        errors.push({ text: "O cpf é muito pequeno" })
+        errors.push( {text: "O cpf é muito pequeno"} )
     }
 
     if ( req.body.typeuser == "0") {
 
-        errors.push({text: "Tipo de pessoa inválido!"})
+        errors.push( {text: "Tipo de pessoa inválido!"} )
 
     }
 
     if (errors.length > 0) {
 
-        res.render("admin/client/index", { errors: errors })
+        res.render("admin/client/index", {errors: errors} )
 
     } else {
 
@@ -346,10 +346,11 @@ router.post("/client/address/add", (req, res) => {
         params:{
             address:location,
             key:'AIzaSyBdta5MVGzl9iMQFvelogCTiONPGTwt5Nk'
-        }
+            }
         })
         .then(function(response) {
         // Log full response
+        console.log(response)
             const lat = response.data.results[0].geometry.location.lat;
             const lng = response.data.results[0].geometry.location.lng;
             newClientAddress.latitude = lat
@@ -358,9 +359,30 @@ router.post("/client/address/add", (req, res) => {
             new ClientAddress(newClientAddress).save().then(() => {
 
                 console.log(newClientAddress)
-                
-                req.flash("success_msg", "Endereço do cliente criado com sucesso!")
-                res.redirect("/admin/client")
+
+                Client.findOne( {_id: req.body.id} ).then((client) => {
+                    
+                    client.address = newClientAddress._id
+                    console.log(client)
+
+                    client.save().then(() => {
+        
+                        req.flash("success_msg", "Endereço do cliente criado com sucesso!")
+                        res.redirect("/admin/client")
+        
+                    }).catch((error) => {
+        
+                        req.flash("error_msg", "Erro interno")
+                        res.redirect("/admin/client")
+        
+                    })
+        
+                }).catch((error) =>{
+        
+                        req.flash("error_msg", "Houve um erro ao encontrar cliente")
+                        res.redirect("/admin/client")
+        
+                    })
     
             }).catch((error) => {
     
@@ -372,6 +394,8 @@ router.post("/client/address/add", (req, res) => {
         }).catch((error) => {
 
             console.log(error);
+            req.flash("error_msg", "Houve um erro ao encontrar coordenadas do endereço!")
+            res.redirect("/admin/client")
 
         })
         
@@ -379,56 +403,23 @@ router.post("/client/address/add", (req, res) => {
 
 })
 
-// router.get("/client/address/edit/:id", (req, res) => {
+router.get("/client/address/edit/:id", (req, res) => {
 
-//     ClientAddress.findOne( {_idAddress: req.params.id} ).then((client) => {
+    ClientAddress.findOne( {_id: req.params.id} ).then((clientaddress) => {
 
-//             res.render("admin/editclientaddress", {client: client} )
+        res.render("admin/client/address/editclientaddress", {clientaddress: clientaddress} )
 
-//     }).catch((error) => {
-
-//         req.flash("error_msg", "Houve um erro ao carregar o formulário de edição")
-//         res.redirect("/admin/client")
-
-//     })
-
-// })
-
-router.get("/client/data/:id", (req, res) => {
-
-    Client.findOne().then((client) => {
-
-        ClientAddress.findOne().then((address) => {
-
-            if (client) {
-
-                if (address) {
-
-                    res.render("admin/client/dataclient", {client: client, address: address} )
-                }
-            
-            } else {
-    
-                req.flash("error_msg", "Houve um erro ao listar dados do cliente")
-                res.redirect("/admin/client")
-    
-            }
-
-        }).catch((error) => {
-
-            req.flash("error_msg", "Houve um erro ao encontrar endereço do cliente")
-            res.redirect("/")
-
-        })
-        
     }).catch((error) => {
 
-        req.flash("error_msg", "Houve um erro interno")
-        res.redirect("/")
+        req.flash("error_msg", "Houve um erro ao carregar o formulário de edição")
+        res.redirect("/admin/client")
 
     })
-})
-router.get('/geocode', (req, res) => {
+
+ })
+
+
+router.post("/client/address/edit", (req, res) => {
 
     var errors =[]
  
@@ -462,12 +453,6 @@ router.get('/geocode', (req, res) => {
 
     }
 
-    if (!req.body.complement || typeof req.body.complement  == undefined || req.body.complement == null) {
-
-        errors.push( {text: "Complemento inválido"} )
-
-    }
-
     if (!req.body.city || typeof req.body.city  == undefined || req.body.city == null) {
 
         errors.push( {text: "Cidade inválida"} )
@@ -486,25 +471,131 @@ router.get('/geocode', (req, res) => {
 
     } else {
 
-        console.log(errors)
+        ClientAddress.findOne( {_id: req.body.id} ).then((clientAddress) => {
+
+            clientAddress.cep           = req.body.cep,
+            clientAddress.street        = req.body.street,
+            clientAddress.district      = req.body.district,
+            clientAddress.number        = req.body.number,
+            clientAddress.complement    = req.body.complement,
+            clientAddress.city          = req.body.city,
+            clientAddress.state         = req.body.state,
+            clientAddress.clientSource  = req.body.clientSource 
+        
+        // concate address and search on api google
+        var location = 
+        req.body.street + ' ' +
+        req.body.district + ' ' +
+        req.body.number + ' ' +
+        req.body.complement + ' ' +
+        req.body.city + ' ' +
+        req.body.state + ' ' +
+        req.body.cep 
+    
+        axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
+            params:{
+                address:location,
+                key:'AIzaSyBdta5MVGzl9iMQFvelogCTiONPGTwt5Nk'
+            }
+        })
+        .then(function(response) {
+        //    Latitude longitude for function axios
+            const lat = response.data.results[0].geometry.location.lat;
+            const lng = response.data.results[0].geometry.location.lng;
+            clientAddress.latitude = lat
+            clientAddress.longitude = lng
+
+            new ClientAddress(clientAddress).save().then(() => {
+
+                console.log(clientAddress)
+
+                Client.findOne( {_id: clientAddress.sourceClient} ).then((client) => {
+                    
+                    client.address = clientAddress._id
+                    console.log(client)
+
+                    client.save().then(() => {
+        
+                        req.flash("success_msg", "Endereço do cliente criado com sucesso!")
+                        res.redirect("/admin/client")
+        
+                    }).catch((error) => {
+        
+                        req.flash("error_msg", "Erro interno")
+                        res.redirect("/admin/client")
+        
+                    })
+        
+                }).catch((error) =>{
+        
+                    req.flash("error_msg", "Houve um erro ao encontrar cliente")
+                    res.redirect("/admin/client")
+        
+                })
+    
+            }).catch((error) => {
+    
+                req.flash("error_msg", "Houve um erro ao salvar endereço do cliente!")
+                res.redirect("/admin/client")
+    
+            })
+
+            }).catch((error) => {
+
+                console.log(error);
+                req.flash("error_msg", "Houve um erro ao encontrar coordenadas do endereço!")
+                res.redirect("/admin/client")
+
+            })
+        
+        })
 
     }
 
 })
- 
+
+router.get("/client/data/:id", (req, res) => {
+
+    Client.findOne( {_id: req.params.id} ).then((client) => { 
+
+        ClientAddress.findOne( {sourceClient: client.id} ).then((address) => {
+
+            res.render("admin/client/dataclient", {client: client, address: address} )
+    
+        }).catch((error) => {
+
+            req.flash("error_msg", "Houve um erro ao encontrar endereço do cliente")
+            res.redirect("/")
+
+        }) 
+
+    }).catch((error) => {
+
+        req.flash("error_msg", "Houve um erro interno")
+        res.redirect("/")
+
+    })
+
+})
+
+// router.get("/sundatabase", (req, res) => {
+
+//     res.render("admin/database/index" )
+
+// })
+
+
+router.get("/client/energybill/add/", (req, res) => {
+
+
+        res.render("admin/client/energybill/addclientenergybill" )
+
+    
+
+})
+
 
 module.exports = router
 
 
 
-/* 
-clientAddress.cep           = req.body.cep,
-clientAddress.street        = req.body.street,
-clientAddress.district      = req.body.district,
-clientAddress.number        = req.body.number,
-clientAddress.complement    = req.body.complement,
-clientAddress.city          = req.body.city,
-clientAddress.state         = req.body.state,
-clientAddress.clientSource  = req.body.clientSource 
-clientAddress.clientSource
-  */

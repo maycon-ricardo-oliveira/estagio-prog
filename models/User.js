@@ -13,7 +13,7 @@ const User = new Schema ({
     eAdmin: {
         type: Schema.Types.ObjectId,
         ref: "typeuser",
-        required: true
+        required: false
     },
     password: {
         type: String,

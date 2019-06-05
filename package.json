@@ -13,6 +13,7 @@
     "express-handlebars": "^3.0.2",
     "express-session": "^1.16.1",
     "google-geolocation": "^1.0.2",
+    "jquery.inputmask": "^3.3.4",
     "mongoose": "^5.5.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"

@@ -1,41 +1,130 @@
 {{#each errors}}
+
     <div class="alert alert-danger">{{text}}</div>
+
     {{else}}
+
 {{/each}}
 
-{{#each clientaddress}}
-<h2>Editar Endereço de {{client.name}}:</h2>
+<script type="text/javascript">
+
+    function limpa_formulário_cep() {
+
+        document.getElementById('street').value=("");
+        document.getElementById('district').value=("");
+        document.getElementById('city').value=("");
+        document.getElementById('state').value=("");
+
+    }
+
+    function meu_callback(conteudo) {
+
+        if (!("erro" in conteudo) ) {
+    
+            document.getElementById('street').value=(conteudo.logradouro);
+            document.getElementById('district').value=(conteudo.bairro);
+            document.getElementById('city').value=(conteudo.localidade);
+            document.getElementById('state').value=(conteudo.uf);
+
+            $("#number").focus();
+
+        } else {
+
+            limpa_formulário_cep();
+            alert("CEP não encontrado.");
+
+        }
+    }
+
+    function pesquisacep(valor) {
+
+        var cep = valor.replace(/\D/g, '');
+
+        if (cep != "") {
+
+            var validacep = /^[0-9]{8}$/;
+
+            if(validacep.test(cep)) {
+
+                document.getElementById('street').value="...";
+                document.getElementById('district').value="...";
+                document.getElementById('city').value="...";
+                document.getElementById('state').value="...";
+
+                var script = document.createElement('script');
+
+                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+                document.body.appendChild(script);
+
+            } else {
+
+                limpa_formulário_cep();
+                alert("Formato de CEP inválido.");
+
+            }
+
+        } else {
+            
+            limpa_formulário_cep();
+
+        }
+        
+    };
+
+</script>
+
+<h2>Editar Endereço {{client.name}}:</h2>
 <hr>
-<form action="/admin/client/edit" method="POST">
-<div class="card bg-light border-dark mt-4">
+<form action="/admin/client/address/edit" method="POST">
+    <div class="card bg-light border-dark mt-4"> 
         <div class="card-body">
-        <input type="hidden" name="id" value="{{client._id}}">
-            <label for="cep" class="mt-2">Cep: </label>
-                <input type="text" id="cep" name="cep" placeholder="CEP" class="form-control" value="{{cep}}" required>
+            <input type="hidden" name="id" value="{{clientaddress._id}}">
+            <div class="justify-content-center">
+                <div class="row justify-content-center">
+                    <label for="cep" class="mt-4 col-md-6"><strong>Cep</strong>:  
+                        <input name="cep" class="form-control" type="text" id="cep" value="{{clientaddress.cep}}" size="10" maxlength="9" onblur="pesquisacep(this.value);">
+                    </label>
+                </div>
+                <div class="row justify-content-center">
+                <label for="street" class="mt-2 col-md-6"><strong>Rua</strong>: 
+                    <input type="text" id="street" name="street" value="{{clientaddress.street}}" placeholder="Rua" class="form-control" required>
+                </label>
 
-            <label for="street" class="mt-2">Rua: </label>
-                <input type="text" id="street" name="street" placeholder="Rua" class="form-control"  value="{{street}}"required>
-            
-            <label for="district" class="mt-2">Bairro: </label>
-                <input type="text" id="district" name="district" placeholder="Bairro" class="form-control"  value="{{district}}"required>
+                <label for="district" class="mt-2 col-md-6"><strong>Bairro</strong>: 
+                    <input type="text" id="district" name="district" value="{{clientaddress.district}}" placeholder="Bairro" class="form-control" required>
+                </label>
 
-            <label for="number" class="mt-2">Número: </label>
-                <input type="text" id="number" name="number" placeholder="Número" class="form-control"  value="{{number}}"required>
-            
-            <label for="complement" class="mt-2">Complemento: </label>
-                <input type="text" id="complement" name="complement" placeholder="Complemento" class="form-control"  value="{{complement}}"required>
-            
-            <label for="city" class="mt-2">Cidade: </label>
-                <input type="text" id="city" name="city" placeholder="Cidade" class="form-control"  value="{{city}}"required>
-            
-            <label for="state" class="mt-2">Estado: </label>
-                <input type="text" id="state" name="state" placeholder="Estado" class="form-control"  value="{{state}}"required>
+                <label for="number" class="mt-2 col-md-6"><strong>Número</strong>: 
+                    <input type="text" id="number" name="number" value="{{clientaddress.number}}" placeholder="Número" class="form-control" required>
+                </label>
 
-            <button type="submit" class="btn btn-outline-success mt-4">Editar Endereço</button>
+                <label for="complement" class="mt-2 col-md-6"><strong>Complemento</strong>: 
+                    <input type="text" id="complement" name="complement" value="{{clientaddress.complement}}" placeholder="Complemento" class="form-control">
+                </label>
 
-        </form>
-       </div>
-    </div> 
-    {{else}}
+                <label for="city" class="mt-2 col-md-6"><strong>Cidade</strong>: 
+                    <input type="text" id="city" name="city" value="{{clientaddress.city}}" placeholder="Cidade" class="form-control" required>
+                </label>
 
-{{/each}}
+                <label for="state" class="mt-2 col-md-6"><strong>Estado</strong>:
+                    <input type="text" id="state" name="state" value="{{clientaddress.state}}" placeholder="Estado" class="form-control" required>
+                </label>
+                <br>
+                </div>
+                <div id="location-form"> 
+                    <div class=" mt-4 card-block " id="geometry">
+                        <button type="submit" class="btn btn-outline-info mt-4">Verificar Localidade</button>
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item mr-3 w-50" id="lat"><strong>Latitude</strong>: {{clientaddress.latitude}}</li>
+                            <li class="list-group-item ml-3 w-50" id="lng"><strong>Longitude</strong>: {{clientaddress.longitude}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-outline-success mb-4 mt-4">Editar Endereço</button>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+<br>

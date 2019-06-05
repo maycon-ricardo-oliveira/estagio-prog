@@ -66,7 +66,6 @@ require("./config/auth")(passport)
     //  Public
     app.use(express.static( path.join(__dirname, 'public') ))
 
-
     //  Routes
     app.get("/404", (req, res) => {
 
