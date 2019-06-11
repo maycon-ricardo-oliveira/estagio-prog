@@ -587,13 +587,23 @@ router.get("/client/data/:id", (req, res) => {
 
 router.get("/client/energybill/add/", (req, res) => {
 
-
-        res.render("admin/client/energybill/addclientenergybill" )
-
-    
+    res.render("admin/client/energybill/addclientenergybill" )
 
 })
 
+router.get("/client/calculate/modules/", (req, res) => {
+
+    res.render("admin/client/energybill/calculatemodules" )
+
+})
+
+
+
+router.post("/client/energybill/add/", (req,res) => {
+
+
+
+})
 
 module.exports = router
 

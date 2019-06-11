@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="/css/admin/admin.css">
+
+<script type="text/javascript">
+
+    function calculateModules() {
+
+        // valor dos imputs
+        var powerModule         = parseInt(document.getElementById('powerModule').value);
+        var sunTime             = parseFloat(document.getElementById('sunTime').value);
+        var totalLoss           = parseFloat(document.getElementById('totalLoss').value);
+        var consumptionEnergy   = parseFloat(document.getElementById('consumptionEnergy').value);
+
+        var dailyEnergy = (powerModule * sunTime * (1 - totalLoss) ) / 1000;
+
+        dailyEnergy = dailyEnergy.toFixed(4);
+
+        var dailyEnergyOutput = `
+
+            <label class="card-text text-justify" type="text" id="energy" name="energy" value="">Um módulo irá gerar aproximadamente <strong>${dailyEnergy} kWh / dia</strong></label>
+        
+        `;
+        
+        monthEnergy = dailyEnergy * 30;
+
+        var monthEnergyOutput = `
+
+            <label class="card-text text-justify" type="text" id="energy" name="energy" value="">Um módulo irá gerar aproximadamente <strong>${monthEnergy} kWh / mês</strong></label>
+        
+        `;
+
+        measureModules = 1 * consumptionEnergy / monthEnergy
+
+        var measureModulesOutput = `
+
+            <label class="card-text text-justify" type="text" id="energy" name="energy" value="">Serão necessários <strong>${measureModules}</strong> módulos, para suprir o consumo mensal de <strong>${monthEnergy} kWh</strong></label>
+        
+        `;
+
+        document.getElementById('energyDaily').innerHTML    = dailyEnergyOutput;
+        document.getElementById('energyMonth').innerHTML    = monthEnergyOutput;
+        document.getElementById('measureModules').innerHTML = measureModulesOutput;
+        document.getElementById('result').style.display = 'block';
+    }
+
+
+    
+</script>
+
+<style>
+
+    .displayCustom{
+
+        display: none;
+        
+    }
+
+</style>
+
+
+{{#each errors}}
+    <div class="alert alert-danger">{{text}}</div>
+    {{else}}
+{{/each}}
+
+
+<h2>Calcular Consumo Médio{{client.name}}:</h2>
+<h3>Quantidade de Módulos Necessários</h3>
+<hr>
+    <div id= "energy-form" class="card bg-light border-dark mt-4">
+        <div class="card-body">
+            <input type="hidden" name="id" value="{{client._id}}">
+            <div class = "row col-md-12">
+                <div class="col-md-6">
+                    <label for="number" class="mt-2 col-md-12"><strong>Potência</strong>: 
+                        <input type="text" id="powerModule" name="powerModule" value="" placeholder="Potência em W do módulo" class="form-control">
+                    </label>
+
+                    <label for="number" class="mt-2 col-md-12"><strong>Tempo</strong>: 
+                        <input type="text" id="sunTime" name="sunTime" value="" placeholder="Tempo de sol em horas" class="form-control">
+                    </label>
+
+                    <label for="number" class="mt-2 col-md-12"><strong>Rendimento</strong>: 
+                        <input type="text" id="totalLoss" name="totalLoss" value="" placeholder="Porcentagem de perdas" class="form-control">
+                    </label>  
+                    <label for="number" class="mt-2 col-md-12"><strong>Consumo Médio</strong>: 
+                        <input type="text" id="consumptionEnergy" name="consumptionEnergy" value="" placeholder="Média de consumo anual em kWh" class="form-control">
+                    </label>  
+                </div>
+                <div class="card bg-light card-size-client displayCustom" id="result">
+                <div class="card-header">Consumo Médio</div>
+                    <div class="card-body">
+                        <h5 for="energy" class="mb-4 col-md-12">Com esses dados temos que:</h5>
+                            <div class="card-block mb-4" id="energyDaily"></div>
+                            <div class="card-block mb-4" id="energyMonth"></div>
+                            <div class="card-block" id="measureModules"></div>
+                        </label>
+                        <br>
+                    </div>
+                </div>
+            </div>
+
+            <button id= 'botao' type="buttom" class="btn btn-outline-success mb-4 mt-4" onclick="calculateModules();" >Calcular</button>
+
+        </div>     
+    </div>
+
+<br>
+<br>
