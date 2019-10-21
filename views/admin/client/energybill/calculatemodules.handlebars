@@ -4,46 +4,28 @@
 
     function calculateModules() {
 
-        // valor dos imputs
+        // imput values
         var powerModule         = parseInt(document.getElementById('powerModule').value);
-        var sunTime             = parseFloat(document.getElementById('sunTime').value);
-        var totalLoss           = parseFloat(document.getElementById('totalLoss').value);
-        var consumptionEnergy   = parseFloat(document.getElementById('consumptionEnergy').value);
+        var sunTime             = parseFloat(document.getElementById('sunTime').value).toFixed(4);
+        var totalLoss           = parseFloat(document.getElementById('totalLoss').value).toFixed(4);
+        var consumptionEnergy   = parseFloat(document.getElementById('consumptionEnergy').value).toFixed(4);
 
         var dailyEnergy = (powerModule * sunTime * (1 - totalLoss) ) / 1000;
 
         dailyEnergy = dailyEnergy.toFixed(4);
-
-        var dailyEnergyOutput = `
-
-            <label class="card-text text-justify" type="text" id="energy" name="energy" value="">Um módulo irá gerar aproximadamente <strong>${dailyEnergy} kWh / dia</strong></label>
+        var dailyEnergyOutput = `<label class="card-text text-justify" type="text" id="energy" name="energy" value="">Um módulo irá gerar aproximadamente <strong>${dailyEnergy} kWh / dia</strong></label>`;
         
-        `;
-        
-        monthEnergy = dailyEnergy * 30;
+        monthEnergy = (dailyEnergy * 30).toFixed(4);
+        var monthEnergyOutput = `<label class="card-text text-justify" type="text" id="energy" name="energy" value="">Um módulo irá gerar aproximadamente <strong>${monthEnergy} kWh / mês</strong></label>`;
 
-        var monthEnergyOutput = `
-
-            <label class="card-text text-justify" type="text" id="energy" name="energy" value="">Um módulo irá gerar aproximadamente <strong>${monthEnergy} kWh / mês</strong></label>
-        
-        `;
-
-        measureModules = 1 * consumptionEnergy / monthEnergy
-
-        var measureModulesOutput = `
-
-            <label class="card-text text-justify" type="text" id="energy" name="energy" value="">Serão necessários <strong>${measureModules}</strong> módulos, para suprir o consumo mensal de <strong>${monthEnergy} kWh</strong></label>
-        
-        `;
+        measureModules = (( 1 * consumptionEnergy ) / monthEnergy).toFixed(4)
+        var measureModulesOutput = `<label class="card-text text-justify" type="text" id="energy" name="energy" value="">Serão necessários <strong>${measureModules}</strong> módulos, para suprir o consumo mensal de <strong>${monthEnergy} kWh</strong></label> `;
 
         document.getElementById('energyDaily').innerHTML    = dailyEnergyOutput;
         document.getElementById('energyMonth').innerHTML    = monthEnergyOutput;
         document.getElementById('measureModules').innerHTML = measureModulesOutput;
         document.getElementById('result').style.display = 'block';
     }
-
-
-    
 </script>
 
 <style>

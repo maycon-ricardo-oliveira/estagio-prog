@@ -2,6 +2,7 @@ require("../models/TypeUser")
 require("../models/Client")
 require("../models/User") 
 require("../models/ClientAddress")
+require("../models/SunDataset")
 
 const express       = require('express')
 const mongoose      = require('mongoose')
@@ -14,6 +15,7 @@ const TypeUser      = mongoose.model('typeuser')
 const Client        = mongoose.model('client')
 const ClientAddress = mongoose.model('clientaddress')
 const User          = mongoose.model('user')
+const Location      = mongoose.model('sundataset')
 
 
 router.get('/', (req, res) => {
@@ -353,8 +355,8 @@ router.post("/client/address/add", (req, res) => {
         console.log(response)
             const lat = response.data.results[0].geometry.location.lat;
             const lng = response.data.results[0].geometry.location.lng;
-            newClientAddress.latitude = lat
-            newClientAddress.longitude = lng
+            newClientAddress.latitude = parseFloat(lat).toFixed(4)
+            newClientAddress.longitude = parseFloat(lng).toFixed(4)
 
             new ClientAddress(newClientAddress).save().then(() => {
 
@@ -593,7 +595,9 @@ router.get("/client/energybill/add/", (req, res) => {
 
 router.get("/client/calculate/modules/", (req, res) => {
 
-    res.render("admin/client/energybill/calculatemodules" )
+   
+	res.render("admin/client/energybill/calculatemodules" )
+   
 
 })
 

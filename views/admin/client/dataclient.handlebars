@@ -7,7 +7,6 @@
 
 {{/each}}
 
-
 <h3>Dados Cadastrais</h3>
 <div class="card bg-light border-dark mt-4">
     <div class="card-body">
@@ -46,8 +45,8 @@
                             <label class="card-text ">Estado: {{address.state}}</label>
                                 <br>
                                     <div>
-                                        <label class="card-text  mb-1 col-md-5">Latitude: {{address.latitude}}</label>
-                                        <label class="card-text  mb-1 col-md-6">Longitude: {{address.longitude}}</label>
+                                        <label id="lat" class="card-text text-justify mb-1 col-md-4"></label>
+                                        <label id="lng" class="card-text text-justify mb-1 col-md-4"></label>
                                     </div>
                             <a href="/admin/client/address/edit/{{address._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Editar</a>
                         </div>
@@ -66,8 +65,8 @@
                             <label class="card-text ">Estado: {{address.state}}</label>
                                 <br>
                                     <div>
-                                        <label class="card-text  mb-1 col-md-5">Latitude: {{address.latitude}}</label>
-                                        <label class="card-text  mb-1 col-md-6">Longitude: {{address.longitude}}</label>
+                                       <label id="lat" class="card-text text-justify mb-1 col-md-4"></label>
+                                       <label id="lng" class="card-text text-justify mb-1 col-md-4"></label>
                                     </div>
                             <a href="/admin/client/address/add/{{client._id}}" role="button" class="btn mt-4 btn-outline-warning btn-lg btn-block">Adicionar</a>
                         </div>
@@ -121,3 +120,19 @@
 
 <br>
 <br> 
+
+<script type="text/javascript">
+
+  var lat = {{address.latitude}}
+  var lng = {{address.longitude}}
+  lat = lat.toFixed(4);
+  lng = lng.toFixed(4);
+
+   latOutput = `<label class="card-text text-justify" type="text" id="latitude" name="energy" value="">Latitude: <strong>${lat}</strong></label>`;
+
+  lngOutput = `<label class="card-text text-justify" type="text" id="longitude" name="energy" value="">Longitude: <strong>${lng}</strong></label>`;
+
+   document.getElementById('lng').innerHTML   = latOutput;
+   document.getElementById('lat').innerHTML   = lngOutput;
+
+</script>

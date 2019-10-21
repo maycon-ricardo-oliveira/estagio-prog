@@ -7,7 +7,6 @@
 {{/each}}
 
 <script type="text/javascript">
-
     function limpa_formulário_cep() {
 
         document.getElementById('street').value=("");
@@ -116,8 +115,8 @@
                     <div class=" mt-4 card-block " id="geometry">
                         <button type="submit" class="btn btn-outline-info mt-4">Verificar Localidade</button>
                         <ul class="list-group list-group-horizontal">
-                            <li class="list-group-item mr-3 w-50" id="lat"><strong>Latitude</strong>: {{clientaddress.latitude}}</li>
-                            <li class="list-group-item ml-3 w-50" id="lng"><strong>Longitude</strong>: {{clientaddress.longitude}}</li>
+                            <li class="list-group-item mr-3 w-50" data-mask="0000"  id="lat"><strong>Latitude</strong>: {{clientaddress.latitude}}</li>
+                             <li class="list-group-item ml-3 w-50" data-mask="0000"  id="lng"><strong>Longitude</strong>: {{clientaddress.longitude}}</li>
                         </ul>
                     </div>
                 </div>
